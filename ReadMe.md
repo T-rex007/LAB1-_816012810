@@ -11,7 +11,7 @@ For each exercise, ensure that the output file, the appropriately commented sour
             <br> Capture the output of this program into a file named "lab1_q1_xxxxxxxxx.out" where xxxxxxxxx is your ID#
             <li>
         <ol>
-    <li>
+    </li>
     <li>Create a new project based on the RTOS SDK example titled "gpio". This example is setup to use 4 pins, 2 inputs and 2 outputs. Adjust the example so that:
         <ol>
             <li>Only a single input and a single output are specified, and the input and output pins selected consistent with available pins on the ESP-01S</li>
