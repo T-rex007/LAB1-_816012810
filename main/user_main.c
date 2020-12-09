@@ -167,11 +167,9 @@ static esp_err_t i2cMasterADS1115Read_(i2c_port_t i2c_num, uint8_t reg_address, 
     i2c_master_stop(cmd);
     ret = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
     i2c_cmd_link_delete(cmd);
-    ESP_LOGI(TAG, "Reading sensors1\n");
     if (ret != ESP_OK) {
         return ret;
     }
-    ESP_LOGI(TAG, "Reading sensors2\n");
     cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, ADS1115_ADDR << 1 | READ_BIT, ACK_CHECK_EN);
@@ -209,33 +207,18 @@ static esp_err_t i2cMasterADS1115Init_(i2c_port_t i2c_num){
     uint8_t data[2];
     data[0] = CONFIG_VALUE_MSB;
     data[1] = CONFIG_VALUE_LSB;
-    ESP_LOGI(TAG, "Initializations \n");
     vTaskDelay(100 / portTICK_RATE_MS);
     i2cMasterInit_();
     ESP_LOGI(TAG, "Initialized");
-    //i2c_cmd_handle_t cmd = i2c_cmd_link_create();
-    //i2c_master_start(cmd);
-    // why the shift?
-    //i2c_master_write_byte(cmd, ADS1115_ADDR << 1 | WRITE_BIT, ACK_CHECK_EN);
-    // i2c_master_write_byte(cmd, CONFIG_REG, ACK_CHECK_EN);
-    //i2c_master_write_byte(cmd, CONFIG_VALUE_MSB, ACK_CHECK_EN);
-    //i2c_master_write_byte(cmd, CONFIG_VALUE_LSB, ACK_CHECK_EN);
-    //i2c_master_write(cmd, data,2 , ACK_CHECK_EN);
-    //i2c_master_stop(cmd);
-    //ESP_ERROR_CHECK(i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS));
-    //i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
-    //i2c_cmd_link_delete(cmd);
     ESP_ERROR_CHECK(i2cMasterADS1115Write(i2c_num, CONFIG_REG, data,2));
-    
     return ESP_OK;
 }
 
 static void i2cTask_(void *arg){
     int ret;
-
+    double an0;
     uint8_t sensor_data[2];
-    
-    
+  
     i2cMasterADS1115Init_(I2C_EXAMPLE_MASTER_NUM);
 
     while(true){
@@ -243,12 +226,13 @@ static void i2cTask_(void *arg){
         ret = i2cMasterADS1115Read_(I2C_EXAMPLE_MASTER_NUM, CONVERSION_REG, sensor_data, 2);
         // memset(sensor_data, 0, 14);
         if(ret ==ESP_OK){
-             ESP_LOGI(TAG, "*******************\n");
-            ESP_LOGI(TAG, "Sensor Value: %d*****%d", (uint16_t)sensor_data[0], (uint16_t)sensor_data[1]);
+            ESP_LOGI(TAG, "*******************\n");
+            an0 = ((double)(int16_t)((sensor_data[0] << 8) | sensor_data[1]));
+            ESP_LOGI(TAG, "Sensor Value: %d", (uint16_t)an0);
         }else{
             ESP_LOGE(TAG, "No ack, sensor not connected...skip...\n");
         }
-        vTaskDelay(100/portTICK_RATE_MS);
+        vTaskDelay(500/portTICK_RATE_MS);
     }
     i2c_driver_delete(I2C_EXAMPLE_MASTER_NUM);
 
