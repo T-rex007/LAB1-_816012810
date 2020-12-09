@@ -12,9 +12,7 @@ For each exercise, ensure that the output file, the appropriately commented sour
         <li>A sempahore is passed from the ISR instead of a message</li>
     </ol>
 </li>
-
-
-This Part of the  
+ 
 
 # _I2C Example_
 
