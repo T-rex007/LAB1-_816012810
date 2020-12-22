@@ -15,16 +15,15 @@
 
 void app_main()
 {
-    printf("Hello world!\n");
+    printf("Hello world! My Name is Tyrel Cadogan #816012810\n");
+    printf("portTICK_PERIOD_MS: %d" ,portTICK_PERIOD_MS);
 
     /* Print chip information */
     esp_chip_info_t chip_info;
     esp_chip_info(&chip_info);
     printf("This is ESP8266 chip with %d CPU cores, WiFi, ",
             chip_info.cores);
-
     printf("silicon revision %d, ", chip_info.revision);
-
     printf("%dMB %s flash\n", spi_flash_get_chip_size() / (1024 * 1024),
             (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "embedded" : "external");
 
